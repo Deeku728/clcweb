@@ -1,0 +1,19 @@
+# Python
+__pycache__/
+*.pyc
+env/
+*.sqlite3
+*.log
+
+# Node.js
+node_modules/
+.next/
+dist/
+build/
+
+# VS Code
+.vscode/
+
+# OS files
+.DS_Store
+Thumbs.db
