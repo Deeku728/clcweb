@@ -10,7 +10,7 @@ const PrivacyPolicy: React.FC = () => {
       <p className="mb-4 text-gray-700">Last Updated: September 5, 2025</p>
 
       <p className="mb-4">
-        [Your Company Name] (“we”, “us”, or “our”) is committed to protecting your privacy and safeguarding your personal information. This Privacy Policy explains how we collect, use, store, and share your personal information when you interact with our website, services, and applications (“Services”).
+        Career Lab Consulting (“we”, “us”, or “our”) is committed to protecting your privacy and safeguarding your personal information. This Privacy Policy explains how we collect, use, store, and share your personal information when you interact with our website, services, and applications (“Services”).
       </p>
       <p className="mb-6">
         By using our Services, you agree to the practices described in this Privacy Policy. If you do not agree, please do not use our Services.
@@ -108,7 +108,7 @@ const PrivacyPolicy: React.FC = () => {
           Depending on your location, you may have rights such as accessing, updating, or deleting your data, opting out of marketing, and controlling cookies.
         </p>
         <p className="text-gray-700">
-          To exercise these rights, contact us at <a href="mailto:your-email@example.com" className="text-blue-600 underline">your-email@example.com</a> or via our contact form.
+          To exercise these rights, contact us at <a href="Info@careerlabconsulting.com" className="text-blue-600 underline">Info@careerlabconsulting.com</a> or via our contact form.
         </p>
       </section>
 
@@ -124,7 +124,7 @@ const PrivacyPolicy: React.FC = () => {
         <p className="text-gray-700">
           For questions, concerns, or to exercise your privacy rights, contact us:  
           <br />
-          <strong>Email:</strong> <a href="mailto:your-email@example.com" className="text-blue-600 underline">your-email@example.com</a>  
+          <strong>Email:</strong> <a href="mailto:Info@careerlabconsulting.com" className="text-blue-600 underline">Info@careerlabconsulting.com</a>  
           <br />
           <strong>Contact Form:</strong> <a href="https://www.yourwebsite.com/contact" className="text-blue-600 underline">https://www.yourwebsite.com/contact</a>
         </p>
