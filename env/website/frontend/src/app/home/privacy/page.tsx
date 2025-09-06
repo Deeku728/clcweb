@@ -126,7 +126,7 @@ const PrivacyPolicy: React.FC = () => {
           <br />
           <strong>Email:</strong> <a href="mailto:Info@careerlabconsulting.com" className="text-blue-600 underline">Info@careerlabconsulting.com</a>  
           <br />
-          <strong>Contact Form:</strong> <a href="https://www.yourwebsite.com/contact" className="text-blue-600 underline">https://www.yourwebsite.com/contact</a>
+          <strong>Contact Form:</strong> <a href="/contactus/page" className="text-blue-600 underline"></a>
         </p>
       </section>
     </main>

@@ -1,265 +1,163 @@
-// pages/workshop-registration.tsx
+// pages/forms.tsx
 "use client";
 
 import React, { useState } from "react";
+import WorkshopRegistration from "./workshop/page";
+import { motion } from "framer-motion";
 
-interface Registration {
-  timestamp: string;
-  fullName: string;
-  email: string;
-  whatsappNumber: string;
-  referral: string;
-  preferredLanguage: string;
-  background: string;
-  preferredDates: string;
-  careerGoal: string;
-  aiExperience: string;
-  consent: boolean;
-  workshopEmail?: string;
-  workshopStatus?: string;
-  teamLeader?: string;
-  srBDE?: string;
-  meetingStatus?: string;
-  enrollmentStatus?: string;
-  remarks?: string;
-}
+/* ---------- Reusable Components ---------- */
+const Card: React.FC<{ children: React.ReactNode }> = ({ children }) => (
+  <motion.div
+    initial={{ opacity: 0, y: 40 }}
+    animate={{ opacity: 1, y: 0 }}
+    transition={{ duration: 0.6, ease: "easeOut" }}
+    className="backdrop-blur-lg bg-white/80 border border-gray-200 shadow-2xl rounded-3xl p-10 w-full max-w-2xl mx-auto"
+  >
+    {children}
+  </motion.div>
+);
 
-const WorkshopRegistration: React.FC = () => {
-  const [registrations, setRegistrations] = useState<Registration[]>([]);
-  const [form, setForm] = useState<Partial<Registration>>({
-    timestamp: new Date().toISOString(),
-  });
+const Input: React.FC<{ label: string; type?: string; required?: boolean }> = ({
+  label,
+  type = "text",
+  required = false,
+}) => (
+  <div className="relative">
+    <input
+      type={type}
+      required={required}
+      placeholder=" "
+      className="peer w-full border border-gray-300 rounded-xl p-4 pt-6 text-gray-900 focus:ring-2 focus:ring-blue-500 outline-none transition bg-gray-50"
+    />
+    <label className="absolute left-3 top-3 text-gray-500 text-sm transition-all peer-placeholder-shown:top-5 peer-placeholder-shown:text-gray-400 peer-placeholder-shown:text-base peer-focus:top-3 peer-focus:text-sm peer-focus:text-blue-600">
+      {label}
+    </label>
+  </div>
+);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
-    const { name, value, type } = e.target;
-    setForm({
-      ...form,
-      [name]: type === "checkbox"
-        ? (e.target instanceof HTMLInputElement ? e.target.checked : false)
-        : value,
-    });
-  };
+const TextArea: React.FC<{ label: string; required?: boolean }> = ({
+  label,
+  required = false,
+}) => (
+  <div className="relative">
+    <textarea
+      required={required}
+      placeholder=" "
+      rows={4}
+      className="peer w-full border border-gray-300 rounded-xl p-4 pt-6 text-gray-900 focus:ring-2 focus:ring-blue-500 outline-none transition bg-gray-50"
+    />
+    <label className="absolute left-3 top-3 text-gray-500 text-sm transition-all peer-placeholder-shown:top-5 peer-placeholder-shown:text-gray-400 peer-placeholder-shown:text-base peer-focus:top-3 peer-focus:text-sm peer-focus:text-blue-600">
+      {label}
+    </label>
+  </div>
+);
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!form.fullName || !form.email || !form.whatsappNumber || !form.consent) {
-      alert("Please fill required fields and consent to continue.");
-      return;
-    }
-    setRegistrations([...registrations, form as Registration]);
-    setForm({ timestamp: new Date().toISOString() }); // reset form
-    alert("Registration submitted successfully!");
-  };
+const Select: React.FC<{ label: string; options: string[]; required?: boolean }> = ({
+  label,
+  options,
+  required = false,
+}) => (
+  <div className="relative">
+    <select
+      required={required}
+      className="peer w-full border border-gray-300 rounded-xl p-4 pt-6 text-gray-900 focus:ring-2 focus:ring-blue-500 outline-none transition bg-gray-50 appearance-none"
+    >
+      <option value="" disabled selected hidden></option>
+      {options.map((opt) => (
+        <option key={opt} value={opt}>
+          {opt}
+        </option>
+      ))}
+    </select>
+    <label className="absolute left-3 top-3 text-gray-500 text-sm transition-all peer-focus:text-blue-600">
+      {label}
+    </label>
+  </div>
+);
+
+/* ---------- Forms ---------- */
+const GeneralQueryForm: React.FC = () => (
+  <Card>
+    <h2 className="text-3xl font-bold text-blue-700 mb-8">💬 General Query</h2>
+    <form className="space-y-6">
+      <Input label="Full Name *" required />
+      <Input label="Email *" type="email" required />
+      <TextArea label="Your Query *" required />
+      <button
+        type="submit"
+        className="w-full bg-gradient-to-r from-green-500 to-green-700 text-white font-semibold px-6 py-4 rounded-xl shadow-lg hover:shadow-green-300 hover:scale-[1.02] transition-transform"
+      >
+        🚀 Submit Query
+      </button>
+    </form>
+  </Card>
+);
+
+const EventRegistrationForm: React.FC = () => (
+  <Card>
+    <h2 className="text-3xl font-bold text-purple-700 mb-8">🎟️ Event Registration</h2>
+    <form className="space-y-6">
+      <Input label="Full Name *" required />
+      <Input label="Email *" type="email" required />
+      <Select
+        label="Event Name *"
+        options={["AI Hackathon", "Data Science Bootcamp", "Tech Meetup"]}
+        required
+      />
+      <button
+        type="submit"
+        className="w-full bg-gradient-to-r from-purple-500 to-purple-700 text-white font-semibold px-6 py-4 rounded-xl shadow-lg hover:shadow-purple-300 hover:scale-[1.02] transition-transform"
+      >
+        🎯 Register Now
+      </button>
+    </form>
+  </Card>
+);
+
+/* ---------- Main Page ---------- */
+const FormsPage: React.FC = () => {
+  const [activeForm, setActiveForm] = useState<"workshop" | "query" | "event">("workshop");
+
+  const buttons = [
+    { id: "workshop", label: "📘 Workshop Registration", color: "blue" },
+    { id: "query", label: "💬 General Query", color: "green" },
+    { id: "event", label: "🎟️ Event Registration", color: "purple" },
+  ];
 
   return (
-    <main className="max-w-6xl mx-auto px-4 py-12">
-      <h1 className="text-4xl font-bold mb-6">AI Workshop Registration</h1>
+    <main className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 py-16 px-6">
+      <motion.h1
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6 }}
+        className="text-5xl font-extrabold mb-12 text-center text-gray-800 tracking-tight"
+      >
+        ✨ Choose Your Form
+      </motion.h1>
 
-      <form onSubmit={handleSubmit} className="space-y-6">
-        {/* Full Name */}
-        <div>
-          <label className="block font-semibold mb-1">
-            Full Name* <span className="text-gray-500">(For certificate & tracking)</span>
-          </label>
-          <input
-            type="text"
-            name="fullName"
-            value={form.fullName || ""}
-            onChange={handleChange}
-            className="w-full border rounded p-2"
-            required
-          />
-        </div>
-
-        {/* Email */}
-        <div>
-          <label className="block font-semibold mb-1">
-            Email Address* <span className="text-gray-500">(Primary communication channel)</span>
-          </label>
-          <input
-            type="email"
-            name="email"
-            value={form.email || ""}
-            onChange={handleChange}
-            className="w-full border rounded p-2"
-            required
-          />
-        </div>
-
-        {/* WhatsApp */}
-        <div>
-          <label className="block font-semibold mb-1">
-            WhatsApp Number* <span className="text-gray-500">(For reminders, badge, follow-up)</span>
-          </label>
-          <input
-            type="tel"
-            name="whatsappNumber"
-            value={form.whatsappNumber || ""}
-            onChange={handleChange}
-            className="w-full border rounded p-2"
-            required
-          />
-        </div>
-
-        {/* Referral */}
-        <div>
-          <label className="block font-semibold mb-1">How did you know about this AI Workshop..?</label>
-          <input
-            type="text"
-            name="referral"
-            value={form.referral || ""}
-            onChange={handleChange}
-            className="w-full border rounded p-2"
-          />
-        </div>
-
-        {/* Preferred Language */}
-        <div>
-          <label className="block font-semibold mb-1">Your Preferred Language for Workshop..?</label>
-          <select
-            name="preferredLanguage"
-            value={form.preferredLanguage || ""}
-            onChange={handleChange}
-            className="w-full border rounded p-2"
+      {/* Buttons */}
+      <div className="flex justify-center flex-wrap gap-6 mb-16">
+        {buttons.map((btn) => (
+          <button
+            key={btn.id}
+            onClick={() => setActiveForm(btn.id as any)}
+            className={`px-8 py-4 rounded-2xl font-semibold shadow-lg transition-transform hover:scale-105 ${
+              activeForm === btn.id
+                ? `bg-gradient-to-r from-${btn.color}-500 to-${btn.color}-700 text-white`
+                : "bg-white border border-gray-300 text-gray-700 hover:bg-gray-100"
+            }`}
           >
-            <option value="">Select Language</option>
-            <option value="English">English</option>
-            <option value="Hindi">Hindi</option>
-            <option value="Other">Other</option>
-          </select>
-        </div>
+            {btn.label}
+          </button>
+        ))}
+      </div>
 
-        {/* Background */}
-        <div>
-          <label className="block font-semibold mb-1">Educational / Work Background*</label>
-          <input
-            type="text"
-            name="background"
-            value={form.background || ""}
-            onChange={handleChange}
-            className="w-full border rounded p-2"
-            placeholder='e.g., "B.Tech Final Year", "Fresher"'
-          />
-        </div>
-
-        {/* Preferred Dates */}
-        <div>
-          <label className="block font-semibold mb-1">
-            Choose your preferred Date(s) for the live workshop
-          </label>
-          <input
-            type="text"
-            name="preferredDates"
-            value={form.preferredDates || ""}
-            onChange={handleChange}
-            className="w-full border rounded p-2"
-            placeholder="You may attend more than one date"
-          />
-        </div>
-
-        {/* Career Goal */}
-        <div>
-          <label className="block font-semibold mb-1">What is your current career goal?</label>
-          <input
-            type="text"
-            name="careerGoal"
-            value={form.careerGoal || ""}
-            onChange={handleChange}
-            className="w-full border rounded p-2"
-          />
-        </div>
-
-        {/* AI Experience */}
-        <div>
-          <label className="block font-semibold mb-1">Have you ever used an AI tool before?</label>
-          <select
-            name="aiExperience"
-            value={form.aiExperience || ""}
-            onChange={handleChange}
-            className="w-full border rounded p-2"
-          >
-            <option value="">Select</option>
-            <option value="Yes">Yes</option>
-            <option value="No">No</option>
-          </select>
-        </div>
-
-        {/* Consent */}
-        <div className="flex items-center space-x-2">
-          <input
-            type="checkbox"
-            name="consent"
-            checked={form.consent || false}
-            onChange={handleChange}
-            required
-          />
-          <label>I consent to receive communications regarding this workshop.</label>
-        </div>
-
-        <button
-          type="submit"
-          className="bg-blue-600 text-white font-semibold px-6 py-2 rounded hover:bg-blue-700 transition"
-        >
-          Submit Registration
-        </button>
-      </form>
-
-      {/* Registration Table */}
-      {registrations.length > 0 && (
-        <div className="mt-12">
-          <h2 className="text-2xl font-bold mb-4">Workshop Registrations</h2>
-          <div className="overflow-x-auto">
-            <table className="min-w-full border border-gray-300">
-              <thead className="bg-gray-100">
-                <tr>
-                  <th className="border p-2">Timestamp</th>
-                  <th className="border p-2">Full Name</th>
-                  <th className="border p-2">Email</th>
-                  <th className="border p-2">WhatsApp</th>
-                  <th className="border p-2">Referral</th>
-                  <th className="border p-2">Language</th>
-                  <th className="border p-2">Background</th>
-                  <th className="border p-2">Preferred Dates</th>
-                  <th className="border p-2">Career Goal</th>
-                  <th className="border p-2">AI Experience</th>
-                  <th className="border p-2">Consent</th>
-                  <th className="border p-2">Workshop Status</th>
-                  <th className="border p-2">Team Leader</th>
-                  <th className="border p-2">Sr. BDE</th>
-                  <th className="border p-2">Meeting Status</th>
-                  <th className="border p-2">Enrollment Status</th>
-                  <th className="border p-2">Remarks</th>
-                </tr>
-              </thead>
-              <tbody>
-                {registrations.map((reg, idx) => (
-                  <tr key={idx} className="text-sm">
-                    <td className="border p-1">{reg.timestamp}</td>
-                    <td className="border p-1">{reg.fullName}</td>
-                    <td className="border p-1">{reg.email}</td>
-                    <td className="border p-1">{reg.whatsappNumber}</td>
-                    <td className="border p-1">{reg.referral}</td>
-                    <td className="border p-1">{reg.preferredLanguage}</td>
-                    <td className="border p-1">{reg.background}</td>
-                    <td className="border p-1">{reg.preferredDates}</td>
-                    <td className="border p-1">{reg.careerGoal}</td>
-                    <td className="border p-1">{reg.aiExperience}</td>
-                    <td className="border p-1">{reg.consent ? "Yes" : "No"}</td>
-                    <td className="border p-1">{reg.workshopStatus || ""}</td>
-                    <td className="border p-1">{reg.teamLeader || ""}</td>
-                    <td className="border p-1">{reg.srBDE || ""}</td>
-                    <td className="border p-1">{reg.meetingStatus || ""}</td>
-                    <td className="border p-1">{reg.enrollmentStatus || ""}</td>
-                    <td className="border p-1">{reg.remarks || ""}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </div>
-      )}
+      {/* Render Selected Form */}
+      {activeForm === "workshop" && <WorkshopRegistration />}
+      {activeForm === "query" && <GeneralQueryForm />}
+      {activeForm === "event" && <EventRegistrationForm />}
     </main>
   );
 };
 
-export default WorkshopRegistration;
+export default FormsPage;

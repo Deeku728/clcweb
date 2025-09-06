@@ -65,7 +65,7 @@ const DisclaimerPage: React.FC = () => {
             <ul className="list-disc list-inside">
               <li>Career Lab Consulting Pvt Ltd</li>
               <li>Email: <a href="mailto:legal@careerlabconsulting.com" className="text-blue-600 underline">legal@careerlabconsulting.com</a></li>
-              <li>Phone: +91-XXXXXXXXXX</li>
+              <li>Phone:+91 87002 36923</li>
             </ul>
           </section>
 
